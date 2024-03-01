@@ -1,31 +1,44 @@
-import { createActor, createMachine, assign } from "xstate";
+import { createMachine, assign } from "xstate";
 
-const counterMachine = createMachine({
-    id: "counter",
-    initial: "active",
-    context: {
-        count: 0,
+export const ModalMachine = createMachine({
+  id: 'modalMachine',
+  initial: 'closed',
+  context: {
+    isOpen: false,
+  },
+  states: {
+    closed: {
+      entry: 'logClosedState',
+      on: {
+        OPEN: {
+          target: 'open',
+          actions: 'openModal'
+        }
+      }
     },
-    states: {
-        active: {
-        on: {
-            INC: {
-                actions: assign({ count: ({ context }) => context.count + 1 }),
-            },
-            DEC: {
-                actions: assign({ count: ({ context }) => context.count - 1 }),
-            },
-        },
-        },
+    open: {
+      entry: 'logOpenState',
+      on: {
+        CLOSE: {
+          target: 'closed',
+          actions: 'closeModal'
+        }
+      }
+    }
+  }
+}, {
+  actions: {
+    openModal: assign({
+      isOpen: true
+    }),
+    closeModal: assign({
+      isOpen: false
+    }),
+    logClosedState: () => {
+      console.log('Entering closed state');
     },
-    });
-
-export default counterMachine;
-
-const toggleActor = createActor(counterMachine);
-
-toggleActor.start();
-
-// toggleActor.subscribe((state) => {
-//     return state.context.count;
-// })
+    logOpenState: () => {
+      console.log('Entering open state');
+    }
+  }
+});

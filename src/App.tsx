@@ -1,30 +1,23 @@
 import { useMachine } from '@xstate/react';
-import counterMachine from './machines/counter-machine/counter-machine';
+import { ModalMachine } from './machines/counter-machine/counter-machine';
 
 function App() {
-  const [state, send] = useMachine(counterMachine);
+  const [state, send] = useMachine(ModalMachine);
+
+  const { isOpen } = state.context;
 
   return (
-    <h1 className="bg-slate-300 p-5">
-      <button className='p-2' onClick={() => {
-        send({
-          type: 'INC'
-        });
-        console.log(state.context.count)
-      }}>+</button>
-
-      <button className='p-2' onClick={() => {
-        send({
-          type: 'DEC'
-        });
-        console.log(state.context.count)
-      }}>-</button>
-
-      <div>
-        {state.context.count}
+    <>
+      <div onClick={() => send({ type: 'OPEN' })}>
+        Click me to open modal
       </div>
-    </h1>
-  )
+      {isOpen && (
+        <div onClick={() => send({ type: 'CLOSE' })}>
+          Modal box - click me to close
+        </div>
+      )}
+    </>
+  );
 }
 
-export default App
+export default App;

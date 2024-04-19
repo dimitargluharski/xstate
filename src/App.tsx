@@ -1,6 +1,9 @@
 import { useMachine } from '@xstate/react';
 import { themeMachine } from './machines/themes-machine/machine';
 
+import { IoSunnySharp } from "react-icons/io5";
+import { IoMoonSharp } from "react-icons/io5";
+
 function App() {
   const [state, send] = useMachine(themeMachine);
 
@@ -8,24 +11,16 @@ function App() {
     send({ type: 'SWITCH_THEME' });
   };
 
-  const styles = {
-    app: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: state.context.theme === 'dark' ? '#333' : '#fff',
-      color: state.context.theme === 'dark' ? '#fff' : '#333',
-    }
-  };
-
   return (
-    <div style={styles.app}>
-      <div>Hello World!</div>
-      <button onClick={toggleTheme}>
-        <span>change theme to </span>
-        <b>
-          {state.context.theme === 'dark' ? 'white' : 'dark'}
-        </b>
-      </button>
+    <div>
+        <button className='bg-slate-500 text-white p-2 border-2 rounded' onClick={toggleTheme}>
+        {state.context.theme === 'dark' 
+        ? <IoSunnySharp />
+        : <IoMoonSharp/>
+      }
+        </button>
+
+        {/* load more data */}
     </div>
   );
 }

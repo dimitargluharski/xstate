@@ -1,22 +1,32 @@
 import { useMachine } from '@xstate/react';
-import { ModalMachine } from './machines/counter-machine/counter-machine';
+import { themeMachine } from './machines/themes-machine/machine';
 
 function App() {
-  const [state, send] = useMachine(ModalMachine);
+  const [state, send] = useMachine(themeMachine);
 
-  const { isOpen } = state.context;
+  const toggleTheme = () => {
+    send({ type: 'SWITCH_THEME' });
+  };
+
+  const styles = {
+    app: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: state.context.theme === 'dark' ? '#333' : '#fff',
+      color: state.context.theme === 'dark' ? '#fff' : '#333',
+    }
+  };
 
   return (
-    <>
-      <div onClick={() => send({ type: 'OPEN' })}>
-        Click me to open modal
-      </div>
-      {isOpen && (
-        <div onClick={() => send({ type: 'CLOSE' })}>
-          Modal box - click me to close
-        </div>
-      )}
-    </>
+    <div style={styles.app}>
+      <div>Hello World!</div>
+      <button onClick={toggleTheme}>
+        <span>change theme to </span>
+        <b>
+          {state.context.theme === 'dark' ? 'white' : 'dark'}
+        </b>
+      </button>
+    </div>
   );
 }
 

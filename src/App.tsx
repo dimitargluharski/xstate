@@ -1,28 +1,39 @@
-import { useMachine } from '@xstate/react';
-import { themeMachine } from './machines/themes-machine/machine';
+import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
-import { IoSunnySharp } from "react-icons/io5";
-import { IoMoonSharp } from "react-icons/io5";
-import { NBA } from './components/NBA';
-import { Counter } from './components/Counter';
+import { useMachine } from '@xstate/react';
+import { todosMachine } from './machines/todos-machines/machine';
 
 function App() {
-  const [state, send] = useMachine(themeMachine);
+  const [state, send] = useMachine(todosMachine);
+  const [todos, setTodos] = useState<[]>([]);
+  const [newTodo, setNewTodo] = useState<string>('');
 
-  const toggleTheme = () => {
-    send({ type: 'SWITCH_THEME' });
-  };
+  const handleAddNewTodo = () => {
+    setTodos(prevValues => {
+      return [...prevValues, newTodo]; 
+    })
+
+    setNewTodo('');
+
+    send({ type: 'ADD_TODO' });
+  }
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setNewTodo(event.target.value);
+  }
 
   return (
-    <div className={`${state.context.theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-slate-50 text-black'}`}>
-      <button className='bg-slate-500 text-white p-2 border-2 rounded' onClick={toggleTheme}>
-        {state.context.theme === 'dark'
-          ? <IoSunnySharp />
-          : <IoMoonSharp />
-        }
-      </button>
-      <NBA />
-      <Counter />
+    <div className=''>
+      <input type="text" value={newTodo} onChange={handleInputChange} style={{ border: '1px'}} />
+      <button onClick={handleAddNewTodo}>Add</button>
+
+      <ul>
+        {todos.length === 0 && <li>No todos</li>}
+        {todos.reverse().map((todo, index) => (
+          <li key={index}>{todo}</li>
+        ))}
+      </ul>
+
     </div>
   );
 }

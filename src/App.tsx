@@ -26,10 +26,16 @@ function App() {
     send({ type: 'REMOVE_TODO', id });
   }
 
+  const handleRemoveAll = () => {
+    setTodos([]);
+    send({ type: 'REMOVE_ALL' });
+  }
+
   return (
     <div>
       <input type="text" value={newTodo} onChange={handleInputChange} />
       <button onClick={handleAddNewTodo}>Add</button>
+      <button onClick={handleRemoveAll}>Remove All</button>
 
       <ul>
         {todos.map((todo) => (

@@ -25,16 +25,22 @@ export const todosMachine = createMachine({
     }
 }, {
     actions: {
-        addNewTodo: ({ context, event}) => {
+        addNewTodo: ({ context, event }) => {
             return {
                 ...context,
                 todos: [...context.todos, event.todo]
             }
         },
-        removeTodo: ({ context, event}) => {
+        removeTodo: ({ context, event }) => {
             return {
                 ...context,
-                todos: context.todos.filter((todo:any) => todo.id !== event.todo.id)
+                todos: context.todos.filter((todo: any) => todo.id !== event.todo.id)
+            }
+        },
+        removeAll: ({ context }) => {
+            return {
+                ...context,
+                todos: []
             }
         },
         alert: () => {

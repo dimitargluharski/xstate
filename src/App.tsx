@@ -22,18 +22,29 @@ function App() {
     setNewTodo(event.target.value);
   }
 
+  const handleRemoveTodo = (index: number) => {
+    setTodos(prevValues => {
+      return prevValues.filter((_, i) => i !== index);
+    });
+
+    send({ type: 'REMOVE_TODO' });
+  }
+
   return (
     <div className=''>
       <input type="text" value={newTodo} onChange={handleInputChange} style={{ border: '1px'}} />
       <button onClick={handleAddNewTodo}>Add</button>
-
+  
       <ul>
         {todos.length === 0 && <li>No todos</li>}
         {todos.reverse().map((todo, index) => (
-          <li key={index}>{todo}</li>
+          <li key={index}>
+            {todo}
+            <button onClick={() => handleRemoveTodo(index)}>Remove</button> {/* Add this button */}
+          </li>
         ))}
       </ul>
-
+  
     </div>
   );
 }

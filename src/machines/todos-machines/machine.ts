@@ -14,6 +14,13 @@ export const todosMachine = createMachine({
                     actions: 'addNewTodo'
                 }
             }
+        },
+        removeTodo: {
+            on: {
+                REMOVE_TODO: {
+                    actions: 'removeTodo'
+                }
+            }
         }
     }
 }, {
@@ -22,6 +29,13 @@ export const todosMachine = createMachine({
             return {
                 ...context,
                 todos: [...context.todos, event.todo]
+            }
+        },
+        removeTodo: ({ context, event}) => {
+            console.log(event.todo);
+            return {
+                ...context,
+                todos: context.todos.filter((todo:any) => todo.id !== event.todo.id)
             }
         }
     }

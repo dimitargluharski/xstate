@@ -1,50 +1,44 @@
-import { ChangeEvent, ChangeEventHandler, useState } from 'react';
-
+import { useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { todosMachine } from './machines/todos-machines/machine';
 
 function App() {
   const [state, send] = useMachine(todosMachine);
-  const [todos, setTodos] = useState<[]>([]);
+  const [todos, setTodos] = useState<{id: string, text: string}[]>([]);
   const [newTodo, setNewTodo] = useState<string>('');
 
   const handleAddNewTodo = () => {
-    setTodos(prevValues => {
-      return [...prevValues, newTodo]; 
-    })
+    const newTodoItem = { id: Date.now().toString(), text: newTodo };
+    setTodos(prevValues => [...prevValues, newTodoItem]);
 
     setNewTodo('');
 
-    send({ type: 'ADD_TODO' });
+    send({ type: 'ADD_TODO', todo: newTodoItem });
   }
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo(event.target.value);
   }
 
-  const handleRemoveTodo = (index: number) => {
-    setTodos(prevValues => {
-      return prevValues.filter((_, i) => i !== index);
-    });
+  const handleRemoveTodo = (id: string) => {
+    setTodos(prevValues => prevValues.filter(todo => todo.id !== id));
 
-    send({ type: 'REMOVE_TODO' });
+    send({ type: 'REMOVE_TODO', id });
   }
 
   return (
-    <div className=''>
-      <input type="text" value={newTodo} onChange={handleInputChange} style={{ border: '1px'}} />
+    <div>
+      <input type="text" value={newTodo} onChange={handleInputChange} />
       <button onClick={handleAddNewTodo}>Add</button>
-  
+
       <ul>
-        {todos.length === 0 && <li>No todos</li>}
-        {todos.reverse().map((todo, index) => (
-          <li key={index}>
-            {todo}
-            <button onClick={() => handleRemoveTodo(index)}>Remove</button> {/* Add this button */}
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {todo.text}
+            <button onClick={() => handleRemoveTodo(todo.id)}>Remove</button>
           </li>
         ))}
       </ul>
-  
     </div>
   );
 }
